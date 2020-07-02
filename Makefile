@@ -13,8 +13,8 @@ dirs:
 	mkdir -p $(obj)
 	mkdir -p $(lib)
 
-chat: $(obj)/chat.o $(lib)/liblist.a
-	$(CC) -o $(bin)/chat $(obj)/chat.o -L$(lib) -llist
+chat: $(obj)/chat.o $(lib)/liblist.a $(lib)/libecdh.a
+	$(CC) -o $(bin)/chat $(obj)/chat.o -L$(lib) -llist -lecdh
 	ln -sfn $(bin)/chat ./chat
 
 $(obj)/chat.o: chat.c
@@ -31,6 +31,12 @@ $(obj)/list_removers.o: list_removers.c list.h
 
 $(obj)/list_movers.o: list_movers.c list.h
 	$(CC) -o $(obj)/list_movers.o -c -I. $(CFLAGS) $(CPPFLAGS) list_movers.c
+
+$(lib)/libecdh.a: $(obj)/ecdh.o
+	ar r $(lib)/libecdh.a $(obj)/ecdh.o
+
+$(obj)/ecdh.o: ecdh.c ecdh.h
+	$(CC) -o $(obj)/ecdh.o -c -I. $(CFLAGS) $(CPPFLAGS) ecdh.c
 
 .PHONY : clean
 clean:
